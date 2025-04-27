@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medical Examination Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+  <style>
+    #signature-canvas {
+      border: 1px solid #d1d5db;
+    }
+    .barcode-container canvas {
+      width: 100px;
+      height: 50px;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto">
+    <form id="medical-form" action="/" method="POST" class="bg-white p-6 rounded shadow space-y-6">
+      <!-- Header -->
+      <div class="text-center mb-6 border-b border-gray-300 pb-4">
+  
+        <!-- Logo Section -->
+        <div class="flex justify-center mb-4 ">
+          <img src="../static//logo.png" alt="Logo" class="h-25" />
+        </div>
+      
+        <!-- Title Section -->
+        <h1 class="text-2xl font-bold">Medical Examination Form</h1>
+        
+        <!-- Barcode Input Section -->
+        <div class="mt-4 mb-2">
+          <label class="block mb-1 font-semibold">Barcode ID *</label>
+          <input
+            type="text"
+            id="barcode"
+            name="barcode"
+            class="border border-gray-300 rounded w-full p-2"
+            placeholder="Enter barcode or patient ID"
+            required
+          />
+        </div>
+        
+      </div>
+      
+
+      <!-- Personal Information -->
+      <div class="border border-gray-300 rounded p-4">
+        <h2 class="font-bold mb-6 text-xl border-b pb-3">Personal Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block mb-1 font-semibold">Date of Exam *</label>
+            <input
+              type="date"
+              id="examDate"
+              name="exam_date"
+              class="border border-gray-300 rounded w-full p-2"
+              required
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Full Name *</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="border border-gray-300 rounded w-full p-2"
+              placeholder="Enter full name"
+              required
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Marital Status</label>
+            <div class="flex items-center mt-2">
+              <label class="mr-4 flex items-center">
+                <input type="radio" name="married" value="Yes" class="mr-1" />
+                <span>Married</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="married" value="No" class="mr-1" />
+                <span>Single</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Date of Birth *</label>
+            <input
+              type="date"
+              id="dob"
+              name="dob"
+              class="border border-gray-300 rounded w-full p-2"
+              required
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Gender *</label>
+            <div class="flex items-center mt-2">
+              <label class="mr-4 flex items-center">
+                <input type="radio" name="gender" value="Male" class="mr-1" />
+                <span>Male</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="gender" value="Female" class="mr-1" />
+                <span>Female</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Occupation</label>
+            <input
+              type="text"
+              id="occupation"
+              name="occupation"
+              class="border border-gray-300 rounded w-full p-2"
+              placeholder="Enter occupation"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Medical Examiner's Report -->
+      <div class="border border-gray-300 rounded p-4">
+        <h2 class="font-bold mb-6 text-xl border-b pb-3">Medical Examiner's Report</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label class="block mb-1 font-semibold">Height (cm)</label>
+            <input
+              type="number"
+              id="height"
+              name="height"
+              class="border border-gray-300 rounded w-full p-2"
+              placeholder="cm"
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Weight (kg)</label>
+            <input
+              type="number"
+              id="weight"
+              name="weight"
+              class="border border-gray-300 rounded w-full p-2"
+              placeholder="kg"
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">BMI</label>
+            <input
+              type="text"
+              id="bmi"
+              name="bmi"
+              readonly
+              class="border border-gray-300 rounded w-full p-2 bg-gray-200 cursor-not-allowed"
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Chest (cm)</label>
+            <input
+              type="text"
+              id="chest"
+              name="chest"
+              class="border border-gray-300 rounded w-full p-2"
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Waist (cm)</label>
+            <input
+              type="text"
+              id="waist"
+              name="waist"
+              class="border border-gray-300 rounded w-full p-2"
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Blood Pressure</label>
+            <input
+              type="text"
+              id="bp"
+              name="bp"
+              class="border border-gray-300 rounded w-full p-2"
+              placeholder="e.g., 120/80"
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Pulse Rate (bpm)</label>
+            <input
+              type="text"
+              id="pulse"
+              name="pulse"
+              class="border border-gray-300 rounded w-full p-2"
+              placeholder="e.g., 72"
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Temperature (°C)</label>
+            <input
+              type="text"
+              id="temp"
+              name="temp"
+              class="border border-gray-300 rounded w-full p-2"
+              placeholder="e.g., 36.5"
+            />
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block mb-1 font-semibold">Smoking</label>
+            <select id="smoking" name="smoking" class="border border-gray-300 rounded w-full p-2">
+              <option value="">Select option</option>
+              <option value="Never">Never</option>
+              <option value="Former">Former</option>
+              <option value="Occasional">Occasional</option>
+              <option value="Regular">Regular</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Alcohol</label>
+            <select id="alcohol" name="alcohol" class="border border-gray-300 rounded w-full p-2">
+              <option value="">Select option</option>
+              <option value="Never">Never</option>
+              <option value="Occasional">Occasional</option>
+              <option value="Moderate">Moderate</option>
+              <option value="Regular">Regular</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Current Medication</label>
+            <input
+              type="text"
+              id="medication"
+              name="medication"
+              class="border border-gray-300 rounded w-full p-2"
+              placeholder="List any current medications"
+            />
+          </div>
+          <div>
+            <label class="block mb-1 font-semibold">Past Surgery/Hospitalization</label>
+            <input
+              type="text"
+              id="surgery"
+              name="surgery"
+              class="border border-gray-300 rounded w-full p-2"
+              placeholder="List any surgeries or hospitalizations"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Eye Examination -->
+      <div class="border border-gray-300 rounded p-4">
+        <h2 class="font-bold mb-6 text-xl border-b pb-3">Eye Examination</h2>
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 p-2"></th>
+              <th class="border border-gray-300 p-2">Right Eye</th>
+              <th class="border border-gray-300 p-2">Left Eye</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 p-2 font-semibold">Distant Vision</td>
+              <td class="border border-gray-300 p-2">
+                <div class="mb-2">
+                  <span class="text-xs block mb-1">Without Glasses</span>
+                  <input
+                    type="text"
+                    id="eyeExam-rightDistant"
+                    name="distant_without_right"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </div>
+                <div>
+                  <span class="text-xs block mb-1">With Glasses</span>
+                  <input
+                    type="text"
+                    id="eyeExam-rightDistantWithGlasses"
+                    name="distant_with_right"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </div>
+              </td>
+              <td class="border border-gray-300 p-2">
+                <div class="mb-2">
+                  <span class="text-xs block mb-1">Without Glasses</span>
+                  <input
+                    type="text"
+                    id="eyeExam-leftDistant"
+                    name="distant_without_left"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </div>
+                <div>
+                  <span class="text-xs block mb-1">With Glasses</span>
+                  <input
+                    type="text"
+                    id="eyeExam-leftDistantWithGlasses"
+                    name="distant_with_left"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2 font-semibold">Near Vision</td>
+              <td class="border border-gray-300 p-2">
+                <div class="mb-2">
+                  <span class="text-xs block mb-1">Without Glasses</span>
+                  <input
+                    type="text"
+                    id="eyeExam-rightNear"
+                    name="near_without_right"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </div>
+                <div>
+                  <span class="text-xs block mb-1">With Glasses</span>
+                  <input
+                    type="text"
+                    id="eyeExam-rightNearWithGlasses"
+                    name="near_with_right"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </div>
+              </td>
+              <td class="border border-gray-300 p-2">
+                <div class="mb-2">
+                  <span class="text-xs block mb-1">Without Glasses</span>
+                  <input
+                    type="text"
+                    id="eyeExam-leftNear"
+                    name="near_without_left"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </div>
+                <div>
+                  <span class="text-xs block mb-1">With Glasses</span>
+                  <input
+                    type="text"
+                    id="eyeExam-leftNearWithGlasses"
+                    name="near_with_left"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2 font-semibold">Color Vision</td>
+              <td class="border border-gray-300 p-2" colspan="2">
+                <input
+                  type="text"
+                  id="eyeExam-colorVision"
+                  name="color_vision"
+                  class="border border-gray-300 rounded w-full p-2"
+                  placeholder="Normal / Abnormal"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2 font-semibold">Provisional Diagnosis</td>
+              <td class="border border-gray-300 p-2" colspan="2">
+                <input
+                  type="text"
+                  id="eyeExam-diagnosis"
+                  name="eye_diagnosis"
+                  class="border border-gray-300 rounded w-full p-2"
+                  placeholder="Enter diagnosis"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Hearing Test -->
+      <div class="border border-gray-300 rounded p-4">
+        <h2 class="font-bold mb-6 text-xl border-b pb-3">Audiometry (Hearing Test)</h2>
+        <table class="w-full border-collapse mb-4">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 p-2">Frequency</th>
+              <th class="border border-gray-300 p-2">Right Ear (dB)</th>
+              <th class="border border-gray-300 p-2">Left Ear (dB)</th>
+              <th class="border border-gray-300 p-2">Assessment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 p-2 font-semibold">500 Hz</td>
+              <td class="border border-gray-300 p-2">
+                <input
+                  type="text"
+                  id="hearingTest-right500"
+                  name="re_500hz"
+                  class="border border-gray-300 rounded w-full p-2"
+                  placeholder="dB"
+                />
+              </td>
+              <td class="border border-gray-300 p-2">
+                <input
+                  type="text"
+                  id="hearingTest-left500"
+                  name="le_500hz"
+                  class="border border-gray-300 rounded w-full p-2"
+                  placeholder="dB"
+                />
+              </td>
+              <td class="border border-gray-300 p-2 text-center">
+                <div class="flex items-center justify-center">
+                  <label class="mr-4 flex items-center">
+                    <input type="radio" name="assessment_500hz" value="PASS" class="mr-1" />
+                    <span>PASS</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="radio" name="assessment_500hz" value="REFER" class="mr-1" />
+                    <span>REFER</span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2 font-semibold">1000 Hz</td>
+              <td class="border border-gray-300 p-2">
+                <input
+                  type="text"
+                  id="hearingTest-right1000"
+                  name="re_1000hz"
+                  class="border border-gray-300 rounded w-full p-2"
+                  placeholder="dB"
+                />
+              </td>
+              <td class="border border-gray-300 p-2">
+                <input
+                  type="text"
+                  id="hearingTest-left1000"
+                  name="le_1000hz"
+                  class="border border-gray-300 rounded w-full p-2"
+                  placeholder="dB"
+                />
+              </td>
+              <td class="border border-gray-300 p-2 text-center">
+                <div class="flex items-center justify-center">
+                  <label class="mr-4 flex items-center">
+                    <input type="radio" name="assessment_1000hz" value="PASS" class="mr-1" />
+                    <span>PASS</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="radio" name="assessment_1000hz" value="REFER" class="mr-1" />
+                    <span>REFER</span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2 font-semibold">2000 Hz</td>
+              <td class="border border-gray-300 p-2">
+                <input
+                  type="text"
+                  id="hearingTest-right2000"
+                  name="re_2000hz"
+                  class="border border-gray-300 rounded w-full p-2"
+                  placeholder="dB"
+                />
+              </td>
+              <td class="border border-gray-300 p-2">
+                <input
+                  type="text"
+                  id="hearingTest-left2000"
+                  name="le_2000hz"
+                  class="border border-gray-300 rounded w-full p-2"
+                  placeholder="dB"
+                />
+              </td>
+              <td class="border border-gray-300 p-2 text-center">
+                <div class="flex items-center justify-center">
+                  <label class="mr-4 flex items-center">
+                    <input type="radio" name="assessment_2000hz" value="PASS" class="mr-1" />
+                    <span>PASS</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="radio" name="assessment_2000hz" value="REFER" class="mr-1" />
+                    <span>REFER</span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 p-2 font-semibold">4000 Hz</td>
+              <td class="border border-gray-300 p-2">
+                <input
+                  type="text"
+                  id="hearingTest-right4000"
+                  name="re_4000hz"
+                  class="border border-gray-300 rounded w-full p-2"
+                  placeholder="dB"
+                />
+              </td>
+              <td class="border border-gray-300 p-2">
+                <input
+                  type="text"
+                  id="hearingTest-left4000"
+                  name="le_4000hz"
+                  class="border border-gray-300 rounded w-full p-2"
+                  placeholder="dB"
+                />
+              </td>
+              <td class="border border-gray-300 p-2 text-center">
+                <div class="flex items-center justify-center">
+                  <label class="mr-4 flex items-center">
+                    <input type="radio" name="assessment_4000hz" value="PASS" class="mr-1" />
+                    <span>PASS</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="radio" name="assessment_4000hz" value="REFER" class="mr-1" />
+                    <span>REFER</span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Dental Examination -->
+      <div class="border border-gray-300 rounded p-4">
+        <h2 class="font-bold mb-6 text-xl border-b pb-3">Dental Examination</h2>
+        <div class="mb-4">
+          <p class="font-semibold mb-2">Have you experienced any of the following?</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <label class="flex items-center">
+              <input type="checkbox" id="dentalIssues-toothPain" name="tooth_pain" class="mr-2" />
+              Tooth Pain
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="dentalIssues-sensitivity" name="sensitivity" class="mr-2" />
+              Sensitivity to Hot/Cold
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="dentalIssues-bleedingGums" name="bleeding_gums" class="mr-2" />
+              Bleeding Gums
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="dentalIssues-previousTreatments" name="previous_treatments" class="mr-2" />
+              Previous Dental Treatments
+            </label>
+          </div>
+        </div>
+        <div class="mb-4">
+          <p class="font-semibold mb-2">Examination Findings</p>
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="border border-gray-300 p-2">Area Examined</th>
+                <th class="border border-gray-300 p-2">Issue Detected</th>
+                <th class="border border-gray-300 p-2">Treatment Needed</th>
+                <th class="border border-gray-300 p-2">Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-gray-300 p-2 font-semibold">Upper Jaw</td>
+                <td class="border border-gray-300 p-2 text-center">
+                  <input type="checkbox" id="dentalExam-upperJaw-issue" name="upper_jaw_issue" />
+                </td>
+                <td class="border border-gray-300 p-2 text-center">
+                  <input type="checkbox" id="dentalExam-upperJaw-treatment" name="upper_jaw_treatment" />
+                </td>
+                <td class="border border-gray-300 p-2">
+                  <input
+                    type="text"
+                    id="dentalExam-upperJaw-comments"
+                    name="upper_jaw_comments"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="border border-gray-300 p-2 font-semibold">Lower Jaw</td>
+                <td class="border border-gray-300 p-2 text-center">
+                  <input type="checkbox" id="dentalExam-lowerJaw-issue" name="lower_jaw_issue" />
+                </td>
+                <td class="border border-gray-300 p-2 text-center">
+                  <input type="checkbox" id="dentalExam-lowerJaw-treatment" name="lower_jaw_treatment" />
+                </td>
+                <td class="border border-gray-300 p-2">
+                  <input
+                    type="text"
+                    id="dentalExam-lowerJaw-comments"
+                    name="lower_jaw_comments"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="border border-gray-300 p-2 font-semibold">Gums</td>
+                <td class="border border-gray-300 p-2 text-center">
+                  <input type="checkbox" id="dentalExam-gums-issue" name="gums_issue" />
+                </td>
+                <td class="border border-gray-300 p-2 text-center">
+                  <input type="checkbox" id="dentalExam-gums-treatment" name="gums_treatment" />
+                </td>
+                <td class="border border-gray-300 p-2">
+                  <input
+                    type="text"
+                    id="dentalExam-gums-comments"
+                    name="gums_comments"
+                    class="border border-gray-300 rounded w-full p-2"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <p class="font-semibold mb-2">Recommended Treatments</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <label class="flex items-center">
+              <input type="checkbox" id="dentalExam-treatments-filling" name="filling" class="mr-2" />
+              Filling
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="dentalExam-treatments-cleaning" name="cleaning" class="mr-2" />
+              Cleaning
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="dentalExam-treatments-rootCanal" name="root_canal" class="mr-2" />
+              Root Canal
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="dentalExam-treatments-extraction" name="extraction" class="mr-2" />
+              Extraction
+            </label>
+            <div class="col-span-2">
+              <label class="block mb-1">Other Treatment:</label>
+              <input
+                type="text"
+                id="dentalExam-treatments-other"
+                name="dental_notes"
+                class="border border-gray-300 rounded w-full p-2"
+                placeholder="Specify other treatment"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- General Medical History -->
+      <div class="border border-gray-300 rounded p-4">
+        <h2 class="font-bold mb-6 text-xl border-b pb-3">General Medical History</h2>
+        <div class="mb-4">
+          <p class="font-semibold mb-2">Medical Conditions</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <label class="flex items-center">
+              <input type="checkbox" name="diabetes" class="mr-2" />
+              Diabetes
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="hypertension" class="mr-2" />
+              Hypertension
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="asthma" class="mr-2" />
+              Asthma
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="heart_disease" class="mr-2" />
+              Heart Disease
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="tuberculosis" class="mr-2" />
+              Tuberculosis
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="kidney_disease" class="mr-2" />
+              Kidney Disease
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="liver_disease" class="mr-2" />
+              Liver Disease
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="cancer" class="mr-2" />
+              Cancer
+            </label>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block mb-2 font-semibold">Family Medical History</label>
+          <textarea
+            name="family_history"
+            class="border border-gray-300 rounded w-full p-2 h-24"
+            placeholder="Enter family medical history"
+          ></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="block mb-2 font-semibold">Allergies</label>
+          <textarea
+            name="allergies"
+            class="border border-gray-300 rounded w-full p-2 h-24"
+            placeholder="List any allergies"
+          ></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="block mb-2 font-semibold">Current Symptoms/Complaints</label>
+          <textarea
+            name="current_symptoms"
+            class="border border-gray-300 rounded w-full p-2 h-24"
+            placeholder="Describe current symptoms or complaints"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Conclusion and Recommendations -->
+      <div class="border border-gray-300 rounded p-4">
+        <h2 class="font-bold mb-6 text-xl border-b pb-3">Conclusion and Recommendations</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block mb-2 font-semibold">Key Findings</label>
+            <textarea
+              id="conclusion-findings"
+              name="findings"
+              class="border border-gray-300 rounded w-full p-2 h-24"
+              placeholder="Summarize key findings from the examination"
+            ></textarea>
+          </div>
+          <div>
+            <label class="block mb-2 font-semibold">Recommendations</label>
+            <textarea
+              id="conclusion-recommendations"
+              name="recommendations"
+              class="border border-gray-300 rounded w-full p-2 h-24"
+              placeholder="Provide recommendations based on the examination results"
+            ></textarea>
+          </div>
+          <div>
+            <label class="block mb-2 font-semibold">Follow-up Required</label>
+            <div class="flex items-center">
+              <label class="mr-4 flex items-center">
+                <input type="radio" name="follow_up" value="Yes" class="mr-1" />
+                <span>Yes</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="follow_up" value="No" class="mr-1" />
+                <span>No</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barcode Display -->
+      <div class="border border-gray-300 rounded p-4 mt-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="font-bold" id="patient-id">Patient ID: </p>
+            <p id="exam-date">Examination Date: </p>
+          </div>
+          <div class="text-center">
+            <div class="barcode-container border-2 border-black p-4 mb-2">
+              <canvas id="barcode-canvas"></canvas>
+            </div>
+            <p class="text-xs">FIFTY ONE PLUS LAB</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signatures -->
+      <div class="flex flex-col md:flex-row justify-between mt-8 border-t pt-4">
+        <div class="mb-4 md:mb-0">
+          <p class="text-sm font-semibold mb-2">Patient's Signature</p>
+          <canvas id="signature-canvas" width="200" height="100"></canvas>
+          <input type="hidden" id="signature" name="signature" />
+          <div class="mt-2">
+            <button type="button" id="clear-signature" class="text-sm text-blue-600 hover:underline">
+              Clear Signature
+            </button>
+          </div>
+        </div>
+        <div>
+          <div class="border-b border-gray-400 w-48 mb-1"></div>
+          <p class="text-sm">Doctor's Signature</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end mt-8 space-x-4">
+        <button
+          type="submit"
+          class="bg-blue-600 text-white px-8 py-3 rounded-lg shadow hover:bg-blue-700 transition flex items-center"
+        >
+          <svg
+            class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            ></path>
+          </svg>
+          Generate PDF
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Initialize SignaturePad
+    const canvas = document.getElementById("signature-canvas");
+    const signaturePad = new SignaturePad(canvas);
+    const signatureInput = document.getElementById("signature");
+
+    // Clear Signature
+    document.getElementById("clear-signature").addEventListener("click", () => {
+      signaturePad.clear();
+      signatureInput.value = "";
+    });
+
+    // Save Signature on End
+    canvas.addEventListener("mouseup", () => {
+      if (!signaturePad.isEmpty()) {
+        signatureInput.value = canvas.toDataURL("image/png");
+      }
+    });
+
+    // BMI Calculation
+    function calculateBMI() {
+      const height = parseFloat(document.getElementById("height").value);
+      const weight = parseFloat(document.getElementById("weight").value);
+      const bmiField = document.getElementById("bmi");
+      if (height > 0 && weight > 0) {
+        const heightInMeters = height / 100;
+        const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(2);
+        bmiField.value = bmi;
+      } else {
+        bmiField.value = "";
+      }
+    }
+
+    document.getElementById("height").addEventListener("input", calculateBMI);
+    document.getElementById("weight").addEventListener("input", calculateBMI);
+
+    // Barcode Generation
+    function updateBarcode() {
+      const barcodeValue = document.getElementById("barcode").value;
+      const patientId = document.getElementById("patient-id");
+      patientId.textContent = `Patient ID: ${barcodeValue || ""}`;
+      if (barcodeValue) {
+        JsBarcode("#barcode-canvas", barcodeValue, {
+          width: 1,
+          height: 50,
+          fontSize: 12,
+          displayValue: true,
+        });
+      } else {
+        const canvas = document.getElementById("barcode-canvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    document.getElementById("barcode").addEventListener("input", updateBarcode);
+
+    // Update Exam Date Display
+    function updateExamDate() {
+      const examDate = document.getElementById("examDate").value;
+      document.getElementById("exam-date").textContent = `Examination Date: ${examDate || ""}`;
+    }
+
+    document.getElementById("examDate").addEventListener("input", updateExamDate);
+  </script>
+</body>
+</html>
